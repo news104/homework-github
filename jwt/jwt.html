@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+
+    <div class="login-form">
+            <h1>Login</h1>
+            <div class="content">
+                <div class="input-field">
+                    <input type="text" id='username' placeholder="Username" autocomplete="nope">
+                </div>
+                <div class="input-field">
+                    <input type="password" id='password' placeholder="Password" autocomplete="new-password">
+                </div>
+                <p style="color: red;" id="er"></p>
+            </div>
+            <div class="action">
+                <button id="btn">Login</button>
+            </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('btn')
+        const user = document.getElementById('username')
+        const pass = document.getElementById('password')
+        const login = () =>{
+            if (!user.value) return alertText("กรุณากรอกข้อมูลให้ถูกต้อง")
+            if (!pass.value) return alertText("กรุณากรอกข้อมูลให้ถูกต้อง")
+
+            fetch('login', {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user: user.value,
+                    pass: pass.value
+                })
+            }).then(async res => {
+                const data = await res.json()
+                if (!res.ok) return alertText(data.msg)
+                location.href = "/home"
+            }).catch(e => {
+                alertText("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ")
+            })
+
+        }
+        pass.onkeypress = (ev) =>{
+            if(ev.code == "Enter")
+            {
+                login();
+            }
+        }
+        const alertText = (txt) => {
+            document.getElementById('er').innerText = txt;
+        }
+        btn.onclick = login
+            
+    </script>
+
+</body>
+
+</html>
